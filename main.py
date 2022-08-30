@@ -12,5 +12,7 @@ def print_hi(name):
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
+    for group_col_num in range(0, 6, 5):
+        print(group_col_num)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
