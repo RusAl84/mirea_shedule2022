@@ -1,7 +1,8 @@
 import pandas as pd
 
-if __name__ == '__main__':
-    filename = "./shedule/ikts-1K-.xls"
+
+def parsing_file(filename):
+    # filename = "./shedule/ikts-1K-.xls"
     xl = pd.ExcelFile(filename)
     sheets = xl.sheet_names
     subj_records = []
@@ -19,7 +20,7 @@ if __name__ == '__main__':
                 for week in range(2):
                     for group_col_num in range(0, 6, 5):
                         line = num_day * 6 + num_subj + 2
-                        print(line)
+                        # print(line)
                         group = df.iloc[0, 5 + group_col_num]
                         subj_name = df.iloc[line, 5 + group_col_num]
                         subj_type = df.iloc[line, 6 + group_col_num]
@@ -35,10 +36,29 @@ if __name__ == '__main__':
                         subj_record.append(teach_name)
                         subj_record.append(aud_name)
                         subj_records.append(subj_record)
-    print(subj_records)
+    # print(subj_records)
+    return subj_records
 
+
+def parsing_all_files(filenames):
+    subj_records = []
+    for filename in filenames:
+        subj_record = parsing_file("./shedule/" + filename)
+        for item in subj_record:
+            subj_records.append(item)
     # save to file
     list_of_colums = ["group", "num_day", "num_subj", "week", " subj_name", "subj_type", "teach_name", "aud_name"]
     df = pd.DataFrame(subj_records, columns=list_of_colums)
-    print(df)
+    # print(df)
     df.to_excel("output.xlsx")
+
+
+if __name__ == '__main__':
+    filenames = [
+        "ikts-1K-.xls",
+        "IKTST-2k.xls",
+        "IKTST-3-k.xls",
+        "IKTST-4-k.xls",
+        "IKTST-5-k.xls"
+    ]
+    parsing_all_files(filenames)
