@@ -1,6 +1,21 @@
 import pandas as pd
 
 
+def test():
+    filename = "./shedule/ikts-1K-.xls"
+    xl = pd.ExcelFile(filename)
+    sheets = xl.sheet_names
+    subj_records = []
+    df = xl.parse(sheets[0])
+
+    for num_day in range(6):
+        for num_subj in range(0, 12, 2):
+            for week in range(1, 2):
+                line = 2 + num_day * 6 * 2 + num_subj + week
+                znach = df.iloc[line, 5]
+                print("line: {0} group: {1} num_day: {2} num_subj: {3}".format(line, znach, num_day, num_subj))
+
+
 def parsing_file(filename):
     # filename = "./shedule/ikts-1K-.xls"
     xl = pd.ExcelFile(filename)
@@ -16,11 +31,12 @@ def parsing_file(filename):
         # odd_week_lines = range(3, 2, 73)
 
         for num_day in range(6):
-            for num_subj in range(6):
-                for week in range(2):
+            for num_subj in range(0, 12, 2):
+                for week in range(1, 2):
                     for group_col_num in range(0, 6, 5):
-                        line = num_day * 6 + num_subj + 2
+                        line = 2 + num_day * 6 * 2 + num_subj + week
                         # print(line)
+
                         group = df.iloc[0, 5 + group_col_num]
                         subj_name = df.iloc[line, 5 + group_col_num]
                         subj_type = df.iloc[line, 6 + group_col_num]
@@ -54,11 +70,13 @@ def parsing_all_files(filenames):
 
 
 if __name__ == '__main__':
-    filenames = [
-        "ikts-1K-.xls",
-        "IKTST-2k.xls",
-        "IKTST-3-k.xls",
-        "IKTST-4-k.xls",
-        "IKTST-5-k.xls"
-    ]
-    parsing_all_files(filenames)
+    # filenames = [
+    #     "ikts-1K-.xls",
+    #     "IKTST-2k.xls",
+    #     "IKTST-3-k.xls",
+    #     "IKTST-4-k.xls",
+    #     "IKTST-5-k.xls"
+    # ]
+    # parsing_all_files(filenames)
+
+    test()

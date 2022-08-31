@@ -10,7 +10,7 @@ if __name__ == '__main__':
              "IKTST-2k.xls"],
             ["https://webservices.mirea.ru/upload/iblock/96f/eajusa4h33wuu4q2oattflmjmk3am63u/IKTST_3_k_osen-22_23.xls",
                 "IKTST_3_k_osen-22_23.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/b8f/qvb2m42wqi7zu4h6cdg7k3m7uveip7o5/IKTST-4-k.xls",
+            ["https://webservices.mirea.ru/upload/iblock/539/7a1mvsw6463rpzpe5m8mqo2pn2kwfz8f/IKTST-4-k.xls",
              "IKTST-4-k.xls"],
             ["https://webservices.mirea.ru/upload/iblock/14c/kkk53zx3zxk37b9ivuowt2qgalkkrr8r/IKTST-5-k.xls",
              "IKTST-5-k.xls"]
