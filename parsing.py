@@ -30,8 +30,8 @@ def parsing_file(filename):
         # even_week_lines = range(2, 2, 72)
         # odd_week_lines = range(3, 2, 73)
         dweek = {}
-        dweek[0] = "четная"
-        dweek[1] = "не четная"
+        dweek[0] = "не четная"
+        dweek[1] = "четная"
         dnum_day = {}
         dnum_day[0] = "1ПН"
         dnum_day[1] = "2ВТ"
@@ -53,7 +53,7 @@ def parsing_file(filename):
                         subj_record = []
                         subj_record.append(group)
                         subj_record.append(dnum_day[num_day])
-                        subj_record.append(int(num_subj / 6) + 1)
+                        subj_record.append(round((num_subj+1.1) / 2))
                         subj_record.append(dweek[week])
                         subj_record.append(subj_name)
                         subj_record.append(subj_type)
