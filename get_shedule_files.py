@@ -7,6 +7,7 @@ def load_file(url, filename):
 
 def load_all_files(urls):
     for item_url in urls:
+        print(item_url[0])
         load_file(item_url[0], "./shedule/" + item_url[1])
 
 
