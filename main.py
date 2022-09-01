@@ -5,16 +5,16 @@ if __name__ == '__main__':
     # print_hi('PyCharm')
     # for group_col_num in range(0, 6, 5):
     #     print(group_col_num)
-    urls = [["https://webservices.mirea.ru/upload/iblock/b9f/1ffqlzsrdlfigrfuhwddaux81kffig22/ikts-1K-.xls",
-             "ikts-1K-.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/7d1/rfruyo6rz2sljq9qz9k2fcco248jaw8s/IKTST-2k.xls",
-             "IKTST-2k.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/96f/eajusa4h33wuu4q2oattflmjmk3am63u/IKTST_3_k_osen-22_23.xls",
-                "IKTST_3_k_osen-22_23.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/539/7a1mvsw6463rpzpe5m8mqo2pn2kwfz8f/IKTST-4-k.xls",
-             "IKTST-4-k.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/14c/kkk53zx3zxk37b9ivuowt2qgalkkrr8r/IKTST-5-k.xls",
-             "IKTST-5-k.xls"]
+    urls = [["https://webservices.mirea.ru/upload/iblock/173/ahnk7937c2lon8u8m48s1a97uaqye7vm/1-kurs-IKB-pyatnitsa-nechet.xls",
+             "1K.xls"],
+            ["https://webservices.mirea.ru/upload/iblock/499/9uhqf0wm1na1v020a0gn5zar6856b7vf/2_kurs_IKB_pyatnitsa_nechet.xls",
+             "2k.xls"],
+            ["https://webservices.mirea.ru/upload/iblock/505/zn20rpfmixg6nr615dbgmq9mhlygayao/4-kurs-IKB-pyatnitsa-nechet.xls",
+            "3k.xls"],
+            ["https://webservices.mirea.ru/upload/iblock/a44/23et1pvdcwn4zonu57qudt63m9tbcqjf/4_kurs_IKB_pyatnitsa_nechet.xls",
+             "4k.xls"],
+            ["https://webservices.mirea.ru/upload/iblock/553/8941gvzxzh0wnoyijohdv3f5nyka9izn/5-kurs-IKB-pyatnitsa-nechet.xls",
+             "5k.xls"]
             ]
     get_shedule_files.load_all_files(urls)
     filenames = []
