@@ -9,7 +9,7 @@ if __name__ == '__main__':
              "1K.xls"],
             ["https://webservices.mirea.ru/upload/iblock/499/9uhqf0wm1na1v020a0gn5zar6856b7vf/2_kurs_IKB_pyatnitsa_nechet.xls",
              "2k.xls"],
-            ["https://webservices.mirea.ru/upload/iblock/505/zn20rpfmixg6nr615dbgmq9mhlygayao/4-kurs-IKB-pyatnitsa-nechet.xls",
+            ["https://webservices.mirea.ru/upload/iblock/7a3/5mj5kxlbmtx5tehfk4gk9c9muwk220db/3-kurs-IKB-pyatnitsa-nechet.xls",
             "3k.xls"],
             ["https://webservices.mirea.ru/upload/iblock/a44/23et1pvdcwn4zonu57qudt63m9tbcqjf/4_kurs_IKB_pyatnitsa_nechet.xls",
              "4k.xls"],

@@ -16,15 +16,22 @@ soup = BeautifulSoup(page.text, "html.parser")
 # news = soup.findAll('a', class_='lenta')
 insts=[]
 # print(soup)
+blocks = soup.findAll(True, {"class":["uk-width-1-1", "uk-grid-margin", "uk-first-column"]})
+# blocks = soup.findAll('div', class_='uk-width-1-1 uk-grid-margin uk-first-column')
+for block in blocks:
+    print(block)
+
+
 insts = soup.findAll('a', class_='uk-text-bold')
+
 # insts = soup.findAll('a.uk-text-bold')
 # print(insts)
-for inst in insts:
-    inst_name = inst.renderContents().decode("utf-8")
-    # print(inst_name)
-    if inst_name == "Институт кибербезопасности и цифровых технологий":
-        print("fd")
-        print(inst)
+# for inst in insts:
+#     inst_name = inst.renderContents().decode("utf-8")
+#     # print(inst_name)
+#     if inst_name == "Институт кибербезопасности и цифровых технологий":
+#         print("fd")
+#         print(inst)
 # for news_item in news:
 #     if news_item.find('span', class_='time2 time3') is not None:
 #         new_news.append(news_item.text)
