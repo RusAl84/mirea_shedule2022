@@ -28,6 +28,7 @@ def get_urls(url = 'https://www.mirea.ru/schedule/'):
                         url = []
                         url.append(link['href'])
                         url.append(str(num) + "-k.xls")
+                        num+=1
                         urls.append(url)
     return urls
 

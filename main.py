@@ -16,6 +16,7 @@ if __name__ == '__main__':
     #          "5k.xls"]
     #         ]
     urls = get_urls.get_urls()
+    print(urls)
     get_shedule_files.load_all_files(urls)
     filenames = []
     for item_urls in urls:
