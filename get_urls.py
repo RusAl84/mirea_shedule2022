@@ -20,11 +20,9 @@ def get_urls(url='https://www.mirea.ru/schedule/'):
         if len(inst) > 0:
             print(inst[0].text)  # список институтов
 
-            if inst[0].text == 'Институт кибербезопасности и цифровых технологий' :
-            # if inst[0].text == 'Институт перспективных технологий и индустриального программирования':
-            # if inst[0].text == 'Институт технологий управления':
-                # print(inst[0].text)
-                # print(block)
+            if inst[0].text == 'Институт кибербезопасности и цифровых технологий' or inst[
+                0].text == 'Институт перспективных технологий и индустриального программирования' or inst[
+                0].text == 'Институт технологий управления':
                 num_inst += 1
                 num = 1
                 for link in soup_inst.find_all('a', href=True):
@@ -34,9 +32,9 @@ def get_urls(url='https://www.mirea.ru/schedule/'):
                         url = []
                         url.append(link['href'])
                         url.append(str(num_inst) + "_" + str(num) + "-k.xls")
+                        url.append(inst[0].text)
                         num += 1
-                        # if "mag" not in link['href'] and "4-kurs-IPTIP-pyatnitsa-nechet.xls" not in link[
-                        #     'href'] and "2-kurs-IPTIP-pyatnitsa-nechet.xls" not in link['href']:
+                        # if "mag" not in link['href'] and "4_kurs" not in link['href'] and "3_kurs" not in link['href']:
                         urls.append(url)
                         # print(url)
     return urls

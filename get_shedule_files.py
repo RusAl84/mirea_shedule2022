@@ -1,8 +1,12 @@
 import urllib
 
+
 def load_file(url, filename):
     import urllib.request
-    urllib.request.urlretrieve(url, filename)
+    import requests
+    r = requests.head(url)
+    if r.status_code == 200:
+        urllib.request.urlretrieve(url, filename)
 
 
 def load_all_files(urls):
