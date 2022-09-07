@@ -80,7 +80,7 @@ def parsing_all_files(urls):
     df = pd.DataFrame(subj_records, columns=list_of_colums)
     # print(df)
     df.to_excel("output.xlsx")
-
+    return subj_records
 
 if __name__ == '__main__':
     test()
