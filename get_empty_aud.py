@@ -32,15 +32,20 @@ def get_empty_auds(df, all_auds, num_day, num_subj, week):
     dnum_day[5] = "6СБ"
     list_of_colums = ["inst", "group", "num_day", "num_subj", "week", "subj_name", "subj_type", "teach_name",
                       "aud_name"]
-    df_num_day = df.loc[df['num_day'] == dnum_day[num_day]]
-    df_num_subj = df_num_day.loc[df_num_day['subj_name']] == str(num_subj)
-    df_week = df_num_subj.loc[df_num_subj['week']] == dweek[week]
-    c_auds = df["aud_name"]
+    # titanic[titanic["Age"] > 35]
+    df_num_day = df[df['num_day'] == num_day]
+    # df_num_day.to_excel("empty_aud.xlsx")
+    # print(list(df_num_day.columns))
+    df_num_subj = df_num_day[df_num_day['num_subj'] == str(num_subj)]
+    # print(df_num_subj)
+    # df_num_subj.to_excel("empty_aud.xlsx")
+    df_week = df_num_subj[df_num_subj['week'] == dweek[week]]
+    c_auds = df_week["aud_name"].values.tolist()
     empty_auds = []
     for aud in c_auds:
         if aud in all_auds:
             empty_auds.append(aud)
-    return(empty_auds)
+    return empty_auds
 
 
 def get_all_auds(auds):
