@@ -75,7 +75,7 @@ def parsing_all_files(urls):
         for item in subj_record:
             subj_records.append(item)
     # save to file
-    list_of_colums = ["inst", "group", "num_day", "num_subj", "week", " subj_name", "subj_type", "teach_name",
+    list_of_colums = ["inst", "group", "num_day", "num_subj", "week", "subj_name", "subj_type", "teach_name",
                       "aud_name"]
     df = pd.DataFrame(subj_records, columns=list_of_colums)
     # print(df)
