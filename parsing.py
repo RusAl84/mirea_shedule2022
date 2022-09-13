@@ -37,16 +37,17 @@ def parsing_file(filename, inst):
             for num_day in range(6):
                 for num_subj in range(0, 12, 2):
                     for week in range(0, 2):
-                        for group_col_num in range(0, 6, 5):
+                        rows = len(df.axes[0])
+                        cols = len(df.axes[1])
+                        for group_col_num in range(0, cols-8, 5):
                             line = 2 + num_day * 6 * 2 + num_subj + week
-                            rows = len(df.axes[0])
-                            cols = len(df.axes[1])
-                            if cols >= 15 and rows >= 97:
-                                group = df.iloc[0, 5 + group_col_num]
-                                # print(f"{group} {cols} {rows} {filename} {inst}")
-                            else:
-                                group = ""
-                            if len(str(group)) > 1:
+                            group = df.iloc[0, 5 + group_col_num]
+                            # if cols >= 15 and rows >= 97:
+                            #     group = df.iloc[0, 5 + group_col_num]
+                            #     # print(f"{group} {cols} {rows} {filename} {inst}")
+                            # else:
+                            #     group = ""
+                            if len(str(group)) > 2 and rows >= 97:
                                 subj_name = df.iloc[line, 5 + group_col_num]
                                 subj_type = df.iloc[line, 6 + group_col_num]
                                 teach_name = df.iloc[line, 7 + group_col_num]
