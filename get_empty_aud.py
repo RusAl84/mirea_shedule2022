@@ -1,114 +1,80 @@
 import urllib
 import pandas as pd
+import warnings
+import regex as re
+from pandas import Series
+import itertools
+
+warnings.filterwarnings("ignore", 'This pattern is interpreted as a regular expression, and has match groups')
+warnings.filterwarnings("ignore", 'The default value of regex will change from True to False in a future version.')
+day_of_week = {0: '1ПН', 1: '2ВТ', 2: '3СР', 3: '4ЧТ', 4: '5ПТ', 5: '6СБ'}
+week_types = {0: "не четная", 1: "четная"}
+lines = []
 
 
 def get_all_aud():
     df = pd.read_excel("output.xlsx")
-    auds = df["aud_name"]
-    all_auds = get_all_auds(auds)
-    dweek = {}
-    dweek[0] = "не четная"
-    dweek[1] = "четная"
-    dnum_day = {}
-    dnum_day[0] = "1ПН"
-    dnum_day[1] = "2ВТ"
-    dnum_day[2] = "3СР"
-    dnum_day[3] = "4ЧТ"
-    dnum_day[4] = "5ПТ"
-    dnum_day[5] = "6СБ"
-    lines = []
+    all_auds = beautify_auds(df)
+    # print(*all_auds, sep='\n')
     for num_day in range(6):
         for num_subj in range(1, 7):
             for week in range(0, 2):
-                line = []
-                line.append(dnum_day[num_day])
-                line.append(num_subj)
-                line.append(dweek[week])
                 empty_auds = get_empty_auds(df, all_auds, num_day, num_subj, week)
-                empty_auds_komp=[]
-                for item in empty_auds:
-                    if "комп" in item:
-                        empty_auds_komp.append(item)
-                str1 = ""
-                for item in empty_auds:
-                    str1 += " " + item
-                line.append(str1)
-                str1 = ""
-                for item in empty_auds_komp:
-                    str1 += " " + item
-                line.append(str1)
+                empty_auds = split_auds_in_floors(empty_auds)
+                line = [day_of_week[num_day], num_subj, week_types[week], ''.join(empty_auds['1']),
+                        ''.join(empty_auds['2']), ''.join(empty_auds['3']), ''.join(empty_auds['4']),
+                        ''.join(empty_auds['комп1']), ''.join(empty_auds['комп2']), ''.join(empty_auds['комп3']),
+                        ''.join(empty_auds['комп4']), ''.join(empty_auds['ФОК']), ''.join(empty_auds['Другие'])]
+                line.extend(())
                 lines.append(line)
-    list_of_colums = ["num_day", "num_subj", "week", "empty_auds", "empty_auds_komp"]
-    df = pd.DataFrame(lines, columns=list_of_colums)
-    # print(df)
+
+    df = pd.DataFrame(lines, columns=["num_day", "num_subj", "week", "empty_1_floor", "empty_2_floor",
+                                      "empty_3_floor", "empty_4_floor", "empty_komp_1_floor",
+                                      "empty_komp_2_floor", "empty_komp_3_floor", "empty_komp_4_floor",
+                                      "empty_FOC", "other_empty"])
     df.to_excel("empty_aud.xlsx")
 
 
 def get_empty_auds(df, all_auds, num_day, num_subj, week):
-    dweek = {}
-    dweek[0] = "не четная"
-    dweek[1] = "четная"
-    dnum_day = {}
-    dnum_day[0] = "1ПН"
-    dnum_day[1] = "2ВТ"
-    dnum_day[2] = "3СР"
-    dnum_day[3] = "4ЧТ"
-    dnum_day[4] = "5ПТ"
-    dnum_day[5] = "6СБ"
-    list_of_colums = ["inst", "group", "num_day", "num_subj", "week", "subj_name", "subj_type", "teach_name",
-                      "aud_name"]
-    df_num_day = df[df['num_day'] == dnum_day[num_day]]
-    # df_num_day.to_excel("df_num_day.xlsx")
-    # print(list(df_num_day.columns))
+    df_num_day = df[df['num_day'] == day_of_week[num_day]]
     df_num_subj = df_num_day[df_num_day['num_subj'] == num_subj]
-    # print(df_num_subj)
-    # df_num_subj.to_excel("df_num_subj.xlsx")
-    df_week = df_num_subj[df_num_subj['week'] == dweek[week]]
-    c_auds = df_week["aud_name"].values.tolist()
-    empty_auds = []
-    for aud in c_auds:
-        if aud in all_auds:
-            empty_auds.append(aud)
-    s = set(empty_auds)
-    empty_auds = list(s)
+    df_week = df_num_subj[df_num_subj['week'] == week_types[week]]
+
+    auds_busy_this_day = beautify_auds(df_week)
+    empty_auds = [" " + aud for aud in all_auds if aud not in auds_busy_this_day]
     empty_auds.sort()
     return empty_auds
 
 
-def get_all_auds(auds):
-    # print(all_auds)
-    # print(empty_auds)
-    all_auds = set(auds)
-    l_all_auds = set()
-    for item in all_auds:
-        if "(С-20)" in str(item):
-            l_all_auds.add(item)
-    all_auds = list(l_all_auds)
-    # print(all_auds)
-    l_auds = all_auds.copy()
-    tmp_list = []
-    for aud1 in all_auds:
-        line = []
-        for aud2 in l_auds:
-            if aud2 in aud1:
-                line.append(aud2)
-        tmp_list.append(line)
-    # print(tmp_list)
-    all_auds = []
-    for item in tmp_list:
-        if len(item) == 1:
-            all_auds.append(item[0])
+def beautify_auds(df):
+    # Причесали - забрали все аудитории стромынки, оставили только колонку названий аудиторий,
+    # убрали переносы строки по бокам (strip) и все лишние пробелы (replace), оставили уникальные аудитории
+    all_auds = sorted(list(set(df[df["aud_name"].str.contains('С-20', na=False)]["aud_name"]
+        .map(lambda x: x.strip('\n'))
+        .replace(r'[^\S\r\n]+', ' ', regex=True).unique())))
+    # Причесали - по регулярке отобрали именно аудитории, убрали None после регулярки,
+    # схлопнули список списков в список (itertools.chain), оставили уникальные аудитории, отсортировали
+    return sorted(list(set((itertools.chain(*list(filter
+               (None, [re.findall('[ауд|комп|физ].{1,12}\(С\-20\)', aud) for aud in all_auds])))))))
+
+
+def split_auds_in_floors(empty_auds):
+    floor_auds = {'1': [], '2': [], '3': [], '4': [], 'комп1': [], 'комп2': [],
+                  'комп3': [], 'комп4': [], 'ФОК': [], 'Другие': []}
+    for aud in empty_auds:
+        if re.search(r'\d{1,}(?![^\(]*\))', aud):
+            aud_number = re.search(r'\d{1,}(?![^\(]*\))', aud)
+            if 'физ' in aud:
+                floor_auds['ФОК'].append(aud)
+                continue
+            floor = str(aud_number[0][0]) if len(aud_number[0]) > 2 else '1'
+            if 'комп' in aud:
+                floor_auds["комп" + floor].append(aud)
+            floor_auds[floor].append(aud)
         else:
-            l = 10 ** 8
-            el = ""
-            for item1 in item:
-                if len(item1) < l:
-                    l = len(item1)
-                    el = item1
-            all_auds.append(el)
-    return all_auds
+            floor_auds['Другие'].append(aud)
+    return floor_auds
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     get_all_aud()
