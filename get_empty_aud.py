@@ -1,3 +1,4 @@
+import multiprocessing
 import urllib
 import pandas as pd
 import warnings
@@ -9,6 +10,10 @@ warnings.filterwarnings("ignore", 'This pattern is interpreted as a regular expr
 warnings.filterwarnings("ignore", 'The default value of regex will change from True to False in a future version.')
 day_of_week = {0: '1ПН', 1: '2ВТ', 2: '3СР', 3: '4ЧТ', 4: '5ПТ', 5: '6СБ'}
 week_types = {0: "не четная", 1: "четная"}
+columns = ["num_day", "num_subj", "week", "empty_1_floor", "empty_2_floor",
+            "empty_3_floor", "empty_4_floor", "empty_komp_1_floor",
+            "empty_komp_2_floor", "empty_komp_3_floor", "empty_komp_4_floor",
+            "empty_FOC", "other_empty"]
 lines = []
 
 
@@ -20,19 +25,15 @@ def get_all_aud():
         for num_subj in range(1, 7):
             for week in range(0, 2):
                 empty_auds = get_empty_auds(df, all_auds, num_day, num_subj, week)
-                empty_auds = split_auds_in_floors(empty_auds)
+                empty_auds = split_auds_in_floors(empty_auds).copy()
                 line = [day_of_week[num_day], num_subj, week_types[week], ''.join(empty_auds['1']),
                         ''.join(empty_auds['2']), ''.join(empty_auds['3']), ''.join(empty_auds['4']),
                         ''.join(empty_auds['комп1']), ''.join(empty_auds['комп2']), ''.join(empty_auds['комп3']),
                         ''.join(empty_auds['комп4']), ''.join(empty_auds['ФОК']), ''.join(empty_auds['Другие'])]
-                line.extend(())
                 lines.append(line)
-
-    df = pd.DataFrame(lines, columns=["num_day", "num_subj", "week", "empty_1_floor", "empty_2_floor",
-                                      "empty_3_floor", "empty_4_floor", "empty_komp_1_floor",
-                                      "empty_komp_2_floor", "empty_komp_3_floor", "empty_komp_4_floor",
-                                      "empty_FOC", "other_empty"])
-    df.to_excel("empty_aud.xlsx")
+                empty_auds.clear()
+    df = pd.DataFrame(lines, columns=columns)
+    load_to_excel(df)
 
 
 def get_empty_auds(df, all_auds, num_day, num_subj, week):
@@ -48,10 +49,17 @@ def get_empty_auds(df, all_auds, num_day, num_subj, week):
 
 def beautify_auds(df):
     # Причесали - забрали все аудитории стромынки, оставили только колонку названий аудиторий,
-    # убрали переносы строки по бокам (strip) и все лишние пробелы (replace), оставили уникальные аудитории
+    # убрали переносы строки по бокам (strip) и все лишние пробелы (replace), поставили точки,
+    # где их не хватает; поставили пробелы, где их не хватает; оставили уникальные аудитории
     all_auds = sorted(list(set(df[df["aud_name"].str.contains('С-20', na=False)]["aud_name"]
         .map(lambda x: x.strip('\n'))
-        .replace(r'[^\S\r\n]+', ' ', regex=True).unique())))
+        .replace(r'[^\S\r\n]+', ' ', regex=True)
+        .replace(r'ауд(?!\.)', 'ауд.', regex=True)
+        .replace(r'комп(?!\.)', 'комп.', regex=True)
+        .replace(r'физ(?!\.)', 'физ.', regex=True)
+        .replace(r'ауд\.(?!\s)', 'ауд. ', regex=True)
+        .replace(r'комп\.(?!\s)', 'комп. ', regex=True)
+        .replace(r'физ\.(?!\s)', 'физ. ', regex=True).unique())))
     # Причесали - по регулярке отобрали именно аудитории, убрали None после регулярки,
     # схлопнули список списков в список (itertools.chain), оставили уникальные аудитории, отсортировали
     return sorted(list(set((itertools.chain(*list(filter
@@ -70,10 +78,23 @@ def split_auds_in_floors(empty_auds):
             floor = str(aud_number[0][0]) if len(aud_number[0]) > 2 else '1'
             if 'комп' in aud:
                 floor_auds["комп" + floor].append(aud)
+                continue
             floor_auds[floor].append(aud)
         else:
             floor_auds['Другие'].append(aud)
     return floor_auds
+
+
+def load_to_excel(df):
+    writer = pd.ExcelWriter('empty_aud.xlsx')
+    df.to_excel(writer, sheet_name='sheetName', index=False, na_rep='NaN')
+    workbook = writer.book
+    for column in df:
+        column_length = max(df[column].astype(str).map(len).max() * 0.1, len(column) * 2)
+        col_idx = df.columns.get_loc(column)
+        form = workbook.add_format({'text_wrap': True})
+        writer.sheets['sheetName'].set_column(col_idx, col_idx, column_length, cell_format=form)
+    writer.save()
 
 
 if __name__ == '__main__':
