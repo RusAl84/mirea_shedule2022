@@ -11,9 +11,9 @@ warnings.filterwarnings("ignore", 'The default value of regex will change from T
 day_of_week = {0: '1ПН', 1: '2ВТ', 2: '3СР', 3: '4ЧТ', 4: '5ПТ', 5: '6СБ'}
 week_types = {0: "не четная", 1: "четная"}
 columns = ["num_day", "num_subj", "week", "empty_1_floor", "empty_2_floor",
-            "empty_3_floor", "empty_4_floor", "empty_komp_1_floor",
-            "empty_komp_2_floor", "empty_komp_3_floor", "empty_komp_4_floor",
-            "empty_FOC", "other_empty"]
+           "empty_3_floor", "empty_4_floor", "empty_komp_1_floor",
+           "empty_komp_2_floor", "empty_komp_3_floor", "empty_komp_4_floor",
+           "empty_FOC", "other_empty"]
 lines = []
 
 
@@ -52,18 +52,19 @@ def beautify_auds(df):
     # убрали переносы строки по бокам (strip) и все лишние пробелы (replace), поставили точки,
     # где их не хватает; поставили пробелы, где их не хватает; оставили уникальные аудитории
     all_auds = sorted(list(set(df[df["aud_name"].str.contains('С-20', na=False)]["aud_name"]
-        .map(lambda x: x.strip('\n'))
-        .replace(r'[^\S\r\n]+', ' ', regex=True)
-        .replace(r'ауд(?!\.)', 'ауд.', regex=True)
-        .replace(r'комп(?!\.)', 'комп.', regex=True)
-        .replace(r'физ(?!\.)', 'физ.', regex=True)
-        .replace(r'ауд\.(?!\s)', 'ауд. ', regex=True)
-        .replace(r'комп\.(?!\s)', 'комп. ', regex=True)
-        .replace(r'физ\.(?!\s)', 'физ. ', regex=True).unique())))
+                               .map(lambda x: x.strip('\n'))
+                               .replace(r'[^\S\r\n]+', ' ', regex=True)
+                               .replace(r'ауд(?!\.)', 'ауд.', regex=True)
+                               .replace(r'комп(?!\.)', 'комп.', regex=True)
+                               .replace(r'физ(?!\.)', 'физ.', regex=True)
+                               .replace(r'ауд\.(?!\s)', 'ауд. ', regex=True)
+                               .replace(r'комп\.(?!\s)', 'комп. ', regex=True)
+                               .replace(r'физ\.(?!\s)', 'физ. ', regex=True).unique())))
     # Причесали - по регулярке отобрали именно аудитории, убрали None после регулярки,
     # схлопнули список списков в список (itertools.chain), оставили уникальные аудитории, отсортировали
     return sorted(list(set((itertools.chain(*list(filter
-               (None, [re.findall('[ауд|комп|физ].{1,12}\(С\-20\)', aud) for aud in all_auds])))))))
+                                                  (None, [re.findall('[ауд|комп|физ].{1,12}\(С\-20\)', aud) for aud in
+                                                          all_auds])))))))
 
 
 def split_auds_in_floors(empty_auds):
