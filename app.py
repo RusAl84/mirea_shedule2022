@@ -47,6 +47,13 @@ def schedule():
     # return f"{teacher} {str(week)}"
 
 
+@app.route("/api/teachers", methods=['get'])
+def teachers():
+    teachers = ["teach1", "teach2"]
+    str_return_data = json.dumps(teachers)
+    return str_return_data
+
+
 if __name__ == '__main__':
     load_data()
     app.run(host="0.0.0.0", debug=False)
