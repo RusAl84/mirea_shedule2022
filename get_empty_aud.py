@@ -1,4 +1,5 @@
 import multiprocessing
+import pickle
 import urllib
 import pandas as pd
 import warnings
@@ -18,7 +19,9 @@ lines = []
 
 
 def get_all_aud():
-    df = pd.read_excel("output.xlsx")
+    # df = pd.read_excel("output.xlsx")
+    with open('df.pickle', 'rb') as handle:
+        df = pickle.load(handle)
     all_auds = beautify_auds(df)
     # print(*all_auds, sep='\n')
     for num_day in range(6):

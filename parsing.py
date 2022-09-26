@@ -75,13 +75,8 @@ def parsing_all_files(urls):
         subj_record = parsing_file("./shedule/" + item[1], item[2])
         for item in subj_record:
             subj_records.append(item)
-    # save to file
-    list_of_colums = ["inst", "group", "num_day", "num_subj", "week", "subj_name", "subj_type", "teach_name",
-                      "aud_name"]
-    df = pd.DataFrame(subj_records, columns=list_of_colums)
-    # print(df)
-    df.to_excel("output.xlsx")
     return subj_records
+
 
 if __name__ == '__main__':
     test()
