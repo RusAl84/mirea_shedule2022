@@ -72,7 +72,10 @@ def parsing_file(filename, inst):
 def parsing_all_files(urls):
     subj_records = []
     for item in urls:
-        subj_record = parsing_file("./shedule/" + item[1], item[2])
+        try:
+            subj_record = parsing_file("./shedule/" + item[1], item[2])
+        except:
+            print("error file xlsx format"+"./shedule/" + item[1])
         for item in subj_record:
             subj_records.append(item)
     return subj_records
