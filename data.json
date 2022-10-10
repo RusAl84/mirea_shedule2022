@@ -1,0 +1,46 @@
+[
+  {
+    'inst': 'Институт перспективных технологий и индустриального программирования',
+    'groups': 'ЭЛБО-02-22',
+    'num_day': '1ПН',
+    'num_subj': '3',
+    'week': 'четная',
+    'subj_name': 'nan',
+    'subj_type': 'nan',
+    'teach_name': 'nan',
+    'aud_name': 'nan'
+  },
+  {
+    'inst': 'Институт перспективных технологий и индустриального программирования',
+    'groups': 'ЭЛБО-02-22',
+    'num_day': '1ПН',
+    'num_subj': '3',
+    'week': 'четная',
+    'subj_name': 'nan',
+    'subj_type': 'nan',
+    'teach_name': 'nan',
+    'aud_name': 'nan'
+  },
+  {
+    'inst': 'Институт перспективных технологий и индустриального программирования',
+    'groups': 'ЭЛБО-02-22',
+    'num_day': '1ПН',
+    'num_subj': '3',
+    'week': 'четная',
+    'subj_name': 'nan',
+    'subj_type': 'nan',
+    'teach_name': 'nan',
+    'aud_name': 'nan'
+  },
+  {
+    'inst': 'Институт перспективных технологий и индустриального программирования',
+    'groups': 'ЭЛБО-02-22',
+    'num_day': 1,
+    'num_subj': 3,
+    'week': 'четная',
+    'subj_name': 'nan',
+    'subj_type': 'nan',
+    'teach_name': 'nan',
+    'aud_name': 'nan'
+  }
+]
