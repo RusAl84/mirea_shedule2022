@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
+import urllib.parse
 
 
-def get_urls(url='https://www.mirea.ru/schedule/'):
+def get_urls(url):
     page = requests.get(url)
     # if page.status_code == 200:
     #     print(url + " 200")
@@ -18,11 +19,11 @@ def get_urls(url='https://www.mirea.ru/schedule/'):
         soup_inst = BeautifulSoup(str(block), "html.parser")
         inst = soup_inst.find_all("a", {"class": "uk-text-bold"})
         if len(inst) > 0:
-            print(inst[0].text)  # список институтов
+            # print(inst[0].text)  # список институтов
 
-            if inst[0].text == 'Институт кибербезопасности и цифровых технологий' or inst[
-                0].text == 'Институт перспективных технологий и индустриального программирования' or inst[
-                0].text == 'Институт технологий управления': 
+            if inst[0].text == 'Институт кибербезопасности и цифровых технологий' \
+                    or inst[0].text == 'Институт перспективных технологий и индустриального программирования' \
+                    or inst[0].text == 'Институт технологий управления':
                 num_inst += 1
                 num = 1
                 for link in soup_inst.find_all('a', href=True):
@@ -31,13 +32,12 @@ def get_urls(url='https://www.mirea.ru/schedule/'):
                         # print(link['href'])
                         url = []
                         url.append(link['href'])
-                        url.append(str(num_inst) + "_" + str(num) + "_k_osen_22_23.xls")   
+                        url.append(str(num_inst) + "_" + str(num) + "_k_osen_22_23.xls")
                         url.append(inst[0].text)
-                        print(url )
                         num += 1
-                        # if "mag" not in link['href'] and "4_kurs" not in link['href'] and "3_kurs" not in link['href']:
-                        urls.append(url)
-                        # print(url)
+                        if "pdf" not in link['href']:
+                            urls.append(url)
+                            # print(url)
     return urls
 
 

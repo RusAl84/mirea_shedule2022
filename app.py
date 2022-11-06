@@ -1,7 +1,6 @@
-import json
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import get_week
+from data_manager import DataManager
 
 app = Flask(__name__)
 CORS(app)
@@ -11,23 +10,24 @@ def dafault_route():
     return 'schedule'
 
 
-@app.route("/api/schedule", methods=['POST'])
+@app.route("/api/schedule/", methods=['post'])
 def schedule():
-    data = request.json
-    teacher = str(data['teacher'])
-    week = str(data['week'])
-    return_data = get_week.get_week(teacher, week)
-    str_return_data = json.dumps(return_data)
-    return str_return_data
-    # return f"{teacher} {str(week)}"
+    return_data = data_manager.get_week(request.form['teacher'], request.form['week'])
+    return return_data
 
 
 @app.route("/api/teachers", methods=['get'])
-def teachers():
-    teachers = ["teach1", "teach2"]
-    str_return_data = json.dumps(teachers)
-    return str_return_data
+def all_teachers():
+    teachers = data_manager.get_teachers()
+    return teachers
+
+
+@app.route("/api/empty_auds", methods=['post'])
+def empty_auds():
+    auds = data_manager.get_empty_auds(int(request.form['subj']), bool(request.form['komp']))
+    return auds
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=False)
+    data_manager = DataManager()
+    app.run(host="0.0.0.0", debug=False, port=26508)
