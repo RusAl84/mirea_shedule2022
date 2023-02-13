@@ -16,7 +16,7 @@ if __name__ == '__main__':
     subj_records = parsing.parsing_all_files(urls)
     # save to file
     list_of_colums = ["inst", "group", "num_day", "num_subj", "week", "subj_name", "subj_type", "teach_name",
-                      "aud_name", "weeks_available"]
+                    "aud_name", "weeks_available"]
     df = pd.DataFrame(subj_records, columns=list_of_colums)
     df.to_excel("output.xlsx")
     with open('df.pickle', 'wb') as handle:
