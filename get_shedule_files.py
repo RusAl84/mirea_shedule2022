@@ -12,7 +12,7 @@ def load_file(url, filename):
 def load_all_files(urls):
     ssl._create_default_https_context = ssl._create_unverified_context
     for item_url in urls:
-        load_file(item_url[0], "/Users/halisha/Desktop/|/" + item_url[1])
+        load_file(item_url[0], "./shedule/" + item_url[1])
 
 
 # Press the green button in the gutter to run the script.

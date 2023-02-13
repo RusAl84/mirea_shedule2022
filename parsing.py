@@ -28,7 +28,10 @@ def parsing_file(filename, inst):
         df = xl.parse(sheet)
         if not df.empty:
             pari = df.iloc[2:15, 1].values.tolist()
-            pari = [int(pair) for pair in pari if str(pair) != 'nan']
+            pari = [int(pair) for pair in pari if str(pair) != 'nan' and len(str(pair))==1 ]
+
+            if len(pari) == 0:
+                continue
             reps = max(pari)
             for num_day in range(6):
                 for num_subj in range(0, 12, 2):
@@ -47,8 +50,8 @@ def parsing_file(filename, inst):
                                     subj_type = prepare_subj_type(subj_type)
                                     subj_name = prepare_subj(subj_name)
                                     subj_record = split_subjects(inst, group, days_of_week[num_day],
-                                                   round((num_subj + 1.1) / 2), dweek[week],
-                                                   subj_name, subj_type, teach_name, aud_name)
+                                                round((num_subj + 1.1) / 2), dweek[week],
+                                                subj_name, subj_type, teach_name, aud_name)
                                     for record in subj_record:
                                         if record not in subj_records:
                                             subj_records.append(record)
@@ -59,7 +62,7 @@ def parsing_file(filename, inst):
 def parsing_all_files(urls):
     subj_records = []
     for item in urls:
-        subj_record = parsing_file("/Users/halisha/Desktop/|/" + item[1], item[2])
+        subj_record = parsing_file("./shedule/" + item[1], item[2])
         for it in subj_record:
             subj_records.append(it)
     return subj_records
