@@ -2,9 +2,11 @@ import pandas as pd
 from regex import regex
 from itertools import groupby
 
-days_of_week = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"]
+days_of_week = ["MONDAY", "TUESDAY", "WEDNESDAY",
+                "THURSDAY", "FRIDAY", "SATURDAY"]
 dweek = ["нечетная", "четная"]
 week_nums = [str(i) for i in range(1, 18)]
+
 
 def test():
     filename = "./shedule/ikts-1K-.xls"
@@ -17,10 +19,13 @@ def test():
             for week in range(1, 2):
                 line = 2 + num_day * 6 * 2 + num_subj + week
                 znach = df.iloc[line, 5]
-                print("line: {0} group: {1} num_day: {2} num_subj: {3}".format(line, znach, num_day, num_subj))
+                print("line: {0} group: {1} num_day: {2} num_subj: {3}".format(
+                    line, znach, num_day, num_subj))
 
 
 def parsing_file(filename, inst):
+    if not is_xls_xlsx_format(filename):
+        return []
     xl = pd.ExcelFile(filename)
     sheets = xl.sheet_names
     subj_records = []
@@ -28,7 +33,8 @@ def parsing_file(filename, inst):
         df = xl.parse(sheet)
         if not df.empty:
             pari = df.iloc[2:15, 1].values.tolist()
-            pari = [int(pair) for pair in pari if str(pair) != 'nan' and len(str(pair))==1 ]
+            pari = [int(pair) for pair in pari if str(
+                pair) != 'nan' and len(str(pair)) == 1]
 
             if len(pari) == 0:
                 continue
@@ -50,8 +56,9 @@ def parsing_file(filename, inst):
                                     subj_type = prepare_subj_type(subj_type)
                                     subj_name = prepare_subj(subj_name)
                                     subj_record = split_subjects(inst, group, days_of_week[num_day],
-                                                round((num_subj + 1.1) / 2), dweek[week],
-                                                subj_name, subj_type, teach_name, aud_name)
+                                                                 round(
+                                                                     (num_subj + 1.1) / 2), dweek[week],
+                                                                 subj_name, subj_type, teach_name, aud_name)
                                     for record in subj_record:
                                         if record not in subj_records:
                                             subj_records.append(record)
@@ -59,9 +66,28 @@ def parsing_file(filename, inst):
     return subj_records
 
 
+def is_xls_xlsx_format(filename):
+    import codecs
+    xlsx_sig = b'\x50\x4B\x05\06'
+    xls_sig = b'\x09\x08\x10\x00\x00\x06\x05\x00'
+    types = [
+        (0, 512, 8),  # 'spreadsheet.xls',
+        (2, -22, 4)]  # 'spreadsheet.xlsx'
+    result = False
+    for whence, offset, size in types:
+        with open(filename, 'rb') as f:
+            f.seek(offset, whence)  # Seek to the offset.
+            bytes = f.read(size)   # Capture the specified number of bytes.
+            # print codecs.getencoder('hex')(bytes)
+            if bytes == xls_sig or bytes == xlsx_sig:
+                result = True
+    return result
+
+
 def parsing_all_files(urls):
     subj_records = []
     for item in urls:
+        print(f"{item[1]} {item[2]}")
         subj_record = parsing_file("./shedule/" + item[1], item[2])
         for it in subj_record:
             subj_records.append(it)
@@ -96,6 +122,7 @@ def prepare_subj_type(s_type):
     s_type = s_type.rstrip(", ")
     return s_type
 
+
 def prepare_subj(subj_name):
     for i in range(20):
         match = regex.search(r"\d\s*п(?:/|\\|//|\\\\)?г", subj_name)
@@ -120,6 +147,7 @@ def prepare_subj(subj_name):
     subjes[:] = [x for x in subjes if x not in subset and not subset.add(x)]
     return subjes
 
+
 def split_subjects(inst, group, dow, num_subj, dweek, subjects, subj_type, teach_name, aud_name):
     # if teach_name == "Ермакова А.Ю." and dow == "TUESDAY":
     #     print([group, dow, num_subj, dweek, subjects, aud_name])
@@ -136,7 +164,8 @@ def split_subjects(inst, group, dow, num_subj, dweek, subjects, subj_type, teach
                 for teacher in teachers]
     print(teachers)
     for i, teacher in enumerate(teachers):
-        teachers_re = regex.findall(r"^[А-Яа-я]{1,20}\s?[А-Яа-я]{1}\.?\s?[А-Яа-я]{1}\.?\s?$", teacher)
+        teachers_re = regex.findall(
+            r"^[А-Яа-я]{1,20}\s?[А-Яа-я]{1}\.?\s?[А-Яа-я]{1}\.?\s?$", teacher)
         if len(teachers_re) == 0:
             break
         teachers[i] = ', '.join(teachers_re)
@@ -154,7 +183,7 @@ def split_subjects(inst, group, dow, num_subj, dweek, subjects, subj_type, teach
         subjects, weeks = define_weeks(subjects, weeks, dweek)
         return [[inst, group, dow, num_subj, dweek, *subjects, subj_type, teachers[0], auds[0], *weeks]]
     # print(subjects, teachers, auds)
-    #Начинаем делить пары
+    # Начинаем делить пары
     subj_type = subj_type.split(',')
     while len(subj_type) < len(subjects):
         try:
@@ -164,9 +193,9 @@ def split_subjects(inst, group, dow, num_subj, dweek, subjects, subj_type, teach
     subjects, weeks = define_weeks(subjects, weeks, dweek)
     subj_recs = []
     for i in range(len(subjects)):
-        subj_recs.append([inst, group, dow, num_subj, dweek, subjects[i], subj_type[i], teachers[i], auds[i], weeks[i]])
+        subj_recs.append([inst, group, dow, num_subj, dweek,
+                         subjects[i], subj_type[i], teachers[i], auds[i], weeks[i]])
     return subj_recs
-
 
 
 def define_week_when(subj_name):
@@ -191,22 +220,27 @@ def define_weeks(subjects, weeks, dweek):
             weeks_raw = regex.search(r"[^н]+н\.?", subj)[0]
             weeks_found = regex.findall(r"[0-9]+", weeks_raw)
             if 'кр' in weeks_raw:
-                weeks_available = [week_num for week_num in week_nums if week_num not in weeks_found]
+                weeks_available = [
+                    week_num for week_num in week_nums if week_num not in weeks_found]
             else:
                 weeks_available = weeks_found
             if dweek == 'нечетная':
-                weeks_available = [week for week in weeks_available if int(week) % 2 == 1]
+                weeks_available = [
+                    week for week in weeks_available if int(week) % 2 == 1]
             else:
-                weeks_available = [week for week in weeks_available if int(week) % 2 == 0]
+                weeks_available = [
+                    week for week in weeks_available if int(week) % 2 == 0]
             subj_name_new = subj.lstrip(weeks_raw)
             subjects[i] = subj_name_new
             weeks.append(','.join(weeks_available))
         else:
             weeks_available = []
             if dweek == 'нечетная':
-                weeks_available = [week for week in week_nums if int(week) % 2 == 1]
+                weeks_available = [
+                    week for week in week_nums if int(week) % 2 == 1]
             else:
-                weeks_available = [week for week in week_nums if int(week) % 2 == 0]
+                weeks_available = [
+                    week for week in week_nums if int(week) % 2 == 0]
             weeks.append(','.join(weeks_available))
     return subjects, weeks
 
@@ -219,8 +253,8 @@ def concat_groups_records(recs):
         j = i
         while j < rec_len:
             if recs[i][2] == recs[j][2] and recs[i][3] == recs[j][3] and recs[i][4] == recs[j][4] \
-            and recs[i][5] == recs[j][5] and recs[i][6] == recs[j][6] and recs[i][7] == recs[j][7] \
-            and recs[i][9] == recs[j][9] and recs[i][1] != recs[j][1]:
+                    and recs[i][5] == recs[j][5] and recs[i][6] == recs[j][6] and recs[i][7] == recs[j][7] \
+                    and recs[i][9] == recs[j][9] and recs[i][1] != recs[j][1]:
                 recs[i][1] += f", {recs[j][1]}"
                 recs_banned.append(j)
             j += 1
