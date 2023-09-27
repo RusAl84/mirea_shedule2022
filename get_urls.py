@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-import urllib.parse
+# import urllib.parse
 
 
 def get_urls(url):
@@ -30,7 +30,7 @@ def get_urls(url):
             #         or inst[0].text == 'Институт перспективных технологий и индустриального программирования' \
             #         or inst[0].text == 'Институт технологий управления':
             
-            if inst[0].text == 'Институт кибербезопасности и цифровых технологий':
+            if inst[0].text == 'Институт искусственного интеллекта':
                 num_inst += 1
                 num = 1
                 for link in soup_inst.find_all('a', href=True):
@@ -43,9 +43,9 @@ def get_urls(url):
                         url.append(inst[0].text)
                         num += 1
                         if "pdf" not in link['href']:
-                            urls.append(url)
-                            # if "mag" in link['href']:
-                            #     urls.append(url)
+                            # urls.append(url)
+                            if "mag" in link['href']:
+                                urls.append(url)
                             # print(url)
     return urls
 
