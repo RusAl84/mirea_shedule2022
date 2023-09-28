@@ -30,7 +30,7 @@ def get_urls(url):
             #         or inst[0].text == 'Институт перспективных технологий и индустриального программирования' \
             #         or inst[0].text == 'Институт технологий управления':
             
-            if inst[0].text == 'Институт искусственного интеллекта':
+            if inst[0].text == 'Институт перспективных технологий и индустриального программирования':
                 num_inst += 1
                 num = 1
                 for link in soup_inst.find_all('a', href=True):
@@ -44,7 +44,7 @@ def get_urls(url):
                         num += 1
                         if "pdf" not in link['href']:
                             # urls.append(url)
-                            if "mag" in link['href']:
+                            if not "mag" in link['href']:
                                 urls.append(url)
                             # print(url)
     return urls
@@ -52,4 +52,6 @@ def get_urls(url):
 
 if __name__ == '__main__':
     url="https://www.mirea.ru/schedule/"
-    print(get_urls(url))
+    urls = get_urls(url)
+    for url in urls:
+        print(url[0])
