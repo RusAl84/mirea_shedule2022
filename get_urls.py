@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
-# import urllib.parse
+import urllib.parse
 
 
 def get_urls(url):
@@ -13,7 +13,6 @@ def get_urls(url):
     
     # /html/body/div[2]/div[2]/div/div/div[2]/div[4]/div[1]/div/ul[2]/li[1]/div/div[4]/div
     #tab-content > li.uk-active > div > div:nth-child(4) > div
-    #
     # <div class="uk-card slider_ads uk-card-body uk-card-small">
     blocks = soup.findAll(True, {"class": ["uk-card", "slider_ads", "uk-card-body", "uk-card-small"]})
 
@@ -23,13 +22,11 @@ def get_urls(url):
         soup_inst = BeautifulSoup(str(block), "html.parser")
         inst = soup_inst.find_all("a", {"class": "uk-text-bold"})
         if len(inst) > 0:
-            pass
-            print(inst[0].text)  # список институтов
+            # print(inst[0].text)  # список институтов
 
             # if inst[0].text == 'Институт кибербезопасности и цифровых технологий' \
             #         or inst[0].text == 'Институт перспективных технологий и индустриального программирования' \
             #         or inst[0].text == 'Институт технологий управления':
-            
             if inst[0].text == 'Институт перспективных технологий и индустриального программирования':
                 num_inst += 1
                 num = 1
@@ -43,15 +40,11 @@ def get_urls(url):
                         url.append(inst[0].text)
                         num += 1
                         if "pdf" not in link['href']:
-                            # urls.append(url)
-                            if not "mag" in link['href']:
-                                urls.append(url)
+                            urls.append(url)
                             # print(url)
     return urls
 
 
 if __name__ == '__main__':
     url="https://www.mirea.ru/schedule/"
-    urls = get_urls(url)
-    for url in urls:
-        print(url[0])
+    print(get_urls(url))
